@@ -66,13 +66,22 @@ def read_osm(filename_or_stream, only_roads=True):
     for w in osm.ways.itervalues():
         if only_roads and 'highway' not in w.tags:
             continue
-        G.add_path(w.nds, id=w.id, highway = w.tags['highway'])#{str(k): type(v) for k,v in w.tags.items()})
-        
+
+        if 'name' in w.tags:
+            highway_name = w.tags['name']
+        elif 'ref' in w.tags:
+            highway_name = w.tags['ref']
+        else:
+            highway_name = 'unknown road'
+
+        G.add_path(w.nds, id=w.id, highway=w.tags['highway'], name=highway_name)
+        #{str(k): type(v) for k,v in w.tags.items()})
+
         if 'oneway' not in w.tags and  w.tags['highway'] != 'motorway':
-            G.add_path(reversed(w.nds), id=w.id, highway = w.tags['highway'])
+            G.add_path(reversed(w.nds), id=w.id, highway = w.tags['highway'], name=highway_name)
 
         elif w.tags['oneway'] != 'yes' and w.tags['oneway'] != '-1' and  w.tags['highway'] != 'motorway':
-            G.add_path(reversed(w.nds), id=w.id, highway = w.tags['highway'])
+            G.add_path(reversed(w.nds), id=w.id, highway = w.tags['highway'], name=highway_name)
 
         
     for n_id in G.nodes_iter():
