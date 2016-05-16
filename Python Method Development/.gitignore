@@ -1,0 +1,6 @@
+.DS_store
+.ipynb_checkpoints/
+*.pyc
+*.csv*
+osmgraph/
+imposm-parser/
